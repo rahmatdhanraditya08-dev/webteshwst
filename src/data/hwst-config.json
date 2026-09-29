@@ -1,0 +1,8 @@
+{
+  "login": {
+    "username": "DEMO",
+    "password": "DEMO-ONLY"
+  },
+  "firebaseReadUrl": "https://hwst-1a388-default-rtdb.asia-southeast1.firebasedatabase.app",
+  "refreshIntervalMs": 5000
+}

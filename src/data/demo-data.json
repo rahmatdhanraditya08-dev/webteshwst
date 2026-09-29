@@ -1,0 +1,28 @@
+{
+  "sensors": [
+    { "temperature": 18.4 },
+    { "temperature": 22.1 },
+    { "temperature": 29.7 },
+    { "temperature": 12.8 },
+    { "temperature": 8.6 },
+    { "temperature": 34.2 },
+    { "temperature": 41.5 },
+    { "temperature": 47.3 }
+  ],
+  "electrical": [
+    { "label": "Tegangan AC", "value": "220.8", "unit": "V", "tone": "voltage-tone" },
+    { "label": "Arus", "value": "2.34", "unit": "A", "tone": "current-tone" },
+    { "label": "Daya aktif", "value": "482", "unit": "W", "tone": "power-tone" },
+    { "label": "Frekuensi", "value": "50.0", "unit": "Hz", "tone": "frequency-tone" },
+    { "label": "Power factor", "value": "0.94", "unit": "PF", "tone": "factor-tone" },
+    { "label": "Energi aktif", "value": "1.28", "unit": "kWh", "tone": "energy-tone" }
+  ],
+  "solar": {
+    "irradiance": 684,
+    "metrics": [
+      { "label": "Daya panel", "value": "326", "unit": "W", "tone": "power-tone" },
+      { "label": "Tegangan PV", "value": "36.4", "unit": "V", "tone": "voltage-tone" },
+      { "label": "Energi hari ini", "value": "2.14", "unit": "kWh", "tone": "energy-tone" }
+    ]
+  }
+}
