@@ -8,3 +8,7 @@
 .team-people > .person-card:nth-child(2) .faceless-silhouette {
   display: none;
 }
+
+.team-people .raditya-portrait img {
+  filter: none;
+}
