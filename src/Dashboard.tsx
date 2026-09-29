@@ -1,5 +1,6 @@
 import { useEffect, useState, type CSSProperties, type FormEvent } from 'react'
 import { Activity, ArrowUpRight, BatteryCharging, ChevronDown, ChevronRight, CircleHelp, CloudSun, Gauge, House, LogOut, Moon, Power, SlidersHorizontal, Sun, Thermometer, UserRound, Waves, Zap } from 'lucide-react'
+import './team-portraits.css'
 import config from './data/hwst-config.json'
 import demo from './data/demo-data.json'
 
@@ -16,9 +17,9 @@ const modes = [
 ]
 const team = [
   { role: 'DOSEN PENELITI', name: 'Yudhy Kurniawan', detail: 'A.Md., S.T., M.T. · NIP. 197710112021211003', initials: 'YK', kind: 'anonymous' },
-  { role: 'KETUA TIM', name: 'Tenny', detail: 'D3 Teknik Pendingin dan Tata Udara', initials: 'T', kind: 'anonymous' },
+  { role: 'KETUA TIM', name: 'Anida Tenny Astriani', detail: 'D3 Teknik Pendingin dan Tata Udara', initials: 'ATA', kind: 'tenny' },
   { role: 'ANGGOTA', name: 'Raditya Rahmat Dhani', detail: 'D4 Teknologi Rekayasa Instrumentasi dan Kontrol', initials: 'RRD', kind: 'raditya' },
-  { role: 'ANGGOTA', name: 'Bagas', detail: 'D3 Teknik Pendingin dan Tata Udara', initials: 'B', kind: 'anonymous' },
+  { role: 'ANGGOTA', name: 'Bagas Ardi Tiansyah', detail: 'D3 Teknik Pendingin dan Tata Udara', initials: 'BAT', kind: 'anonymous' },
 ]
 
 function toUnit(value: number, unit: Unit) {

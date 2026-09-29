@@ -1,0 +1,10 @@
+.team-people > .person-card:nth-child(2) .person-portrait {
+  background-image: url('./tenny.jpeg');
+  background-position: center 25%;
+  background-size: cover;
+}
+
+.team-people > .person-card:nth-child(2) .portrait-fallback,
+.team-people > .person-card:nth-child(2) .faceless-silhouette {
+  display: none;
+}
