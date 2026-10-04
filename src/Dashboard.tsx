@@ -48,6 +48,13 @@ function sensorsFromFirebase(raw: Record<string, { name?: string; temperature?: 
   })
 }
 
+function relayStatesFromFirebase(raw: Record<string, boolean> | null): Record<string, boolean> {
+  return relayList.reduce<Record<string, boolean>>((accumulator, relay) => {
+    accumulator[relay.id] = raw?.[relay.id] === true
+    return accumulator
+  }, {})
+}
+
 function TempChart({ sensors, unit }: { sensors: Sensor[]; unit: Unit }) {
   const points = sensors.map((sensor, index) => {
     const x = 70 + index * 102
@@ -99,10 +106,18 @@ export default function Dashboard() {
       const url = config.firebaseReadUrl.trim().replace(/\/$/, '')
       if (url) {
         try {
-          const [temperatureResponse, systemResponse] = await Promise.all([fetch(`${url}/temperature.json`, { cache: 'no-store' }), fetch(`${url}/system.json`, { cache: 'no-store' })])
-          if (!temperatureResponse.ok || !systemResponse.ok) throw new Error('Firebase unavailable')
-          const [temperatureData, systemData] = await Promise.all([temperatureResponse.json(), systemResponse.json()])
+          const [temperatureResponse, systemResponse, relayResponse] = await Promise.all([
+            fetch(`${url}/temperature.json`, { cache: 'no-store' }),
+            fetch(`${url}/system.json`, { cache: 'no-store' }),
+            fetch(`${url}/relays.json`, { cache: 'no-store' }),
+          ])
+          if (!temperatureResponse.ok || !systemResponse.ok || !relayResponse.ok) throw new Error('Firebase unavailable')
+          const [temperatureData, systemData, relayData] = await Promise.all([temperatureResponse.json(), systemResponse.json(), relayResponse.json()])
           const sensors = sensorsFromFirebase(temperatureData)
+          const relaySnapshot = relayStatesFromFirebase(relayData)
+          if (active) {
+            setRelayStates((current) => ({ ...current, ...relaySnapshot }))
+          }
           if (active && sensors.some((sensor) => sensor.online)) {
             setTelemetry({ sensors, ip: systemData?.ip || 'Tidak tersedia', live: true, updatedAt: new Date(), systemOnline: systemData?.online === true })
             return
@@ -111,7 +126,9 @@ export default function Dashboard() {
           // Gunakan sampel lokal bila endpoint Firebase tidak dapat dibaca.
         }
       }
-      if (active) setTelemetry((current) => ({ ...current, sensors: demoSensors(), live: false, updatedAt: new Date() }))
+      if (active) {
+        setTelemetry((current) => ({ ...current, sensors: demoSensors(), live: false, updatedAt: new Date() }))
+      }
     }
     void refresh()
     const interval = window.setInterval(() => void refresh(), config.refreshIntervalMs)
@@ -139,11 +156,26 @@ export default function Dashboard() {
   const average = activeSensors ? telemetry.sensors.reduce((sum, sensor) => sum + (sensor.temperature ?? 0), 0) / activeSensors : null
   const activeRelays = relayList.filter((relay) => relayStates[relay.id]).map((relay) => relay.label)
 
-  function toggleRelay(relayId: string) {
+  async function toggleRelay(relayId: string) {
+    const nextValue = !relayStates[relayId]
     setRelayStates((current) => ({
       ...current,
-      [relayId]: !current[relayId],
+      [relayId]: nextValue,
     }))
+
+    const url = config.firebaseReadUrl.trim().replace(/\/$/, '')
+    if (!url) return
+
+    try {
+      const response = await fetch(`${url}/relays/${relayId}.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(nextValue),
+      })
+      if (!response.ok) throw new Error('relay update failed')
+    } catch {
+      // Tetap gunakan state lokal bila Firebase tidak dapat menulis.
+    }
   }
 
   if (loading) return <main className="loading-screen"><div className="loading-atmosphere" /><div className="loader-mark"><span /><span /><span /></div><p className="overline">HWST · LABORATORIUM TERMAL</p><h1>Menyiapkan ruang kendali</h1><p className="loading-detail">Menyinkronkan panel monitoring...</p><div className="loading-track"><span /></div><small>MONITORING KONTROL HWST</small></main>
